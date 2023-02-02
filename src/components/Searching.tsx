@@ -9,10 +9,11 @@ const SearchBar = styled.div`
   width: 100%;
   border: 3px solid #b6d8e4;
   border-radius: 10px;
+  margin-bottom: 20px;
 `;
 const SearchInput = styled.input`
   display: block;
-  height: 25px;
+  height: 30px;
   width: 90%;
   border: none;
   outline: none;
