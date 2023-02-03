@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
-import { trendingTagsActions } from "../store/trendingTagsReducer";
+import { RootState, AppDispatch } from "../store";
+import {
+  trendingTagsActions,
+  fetchTagsAsync,
+} from "../store/trendingTagsReducer";
 
 const Title = styled.h3``;
 const Tags = styled.div`
@@ -18,22 +21,21 @@ const Tag = styled.div<{ selected: boolean }>`
 `;
 
 function TreadingTags() {
-  const dispatch = useDispatch();
-  const allTags = useSelector((state: RootState) => state.trendingTags.allTags);
-  const selectedTag = useSelector(
-    (state: RootState) => state.trendingTags.selectedTag
+  const dispatch = useDispatch<AppDispatch>();
+  const { allTags, selectedTag, loading, error } = useSelector(
+    (state: RootState) => state.trendingTags
   );
+
   useEffect(() => {
-    const fetchTags = async () => {
-      const res = await fetch(
-        "https://api.stackexchange.com/2.3/tags?page=1&pagesize=10&order=desc&sort=popular&site=stackoverflow"
-      );
-      const tags = await res.json();
-      dispatch(trendingTagsActions.setAllTags(tags));
-      dispatch(trendingTagsActions.selectTag(tags.items[0].name));
-    };
-    fetchTags();
+    dispatch(fetchTagsAsync());
   }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Something went wrong...</div>;
+  }
 
   return (
     <>
