@@ -6,6 +6,7 @@ import {
   trendingTagsActions,
   fetchTagsAsync,
 } from "../store/trendingTagsReducer";
+import { questionsListActions } from "../store/questionsListReducer";
 import spinner from "../img/spinner.gif";
 
 const LoadingContainer = styled.div`
@@ -15,14 +16,10 @@ const LoadingContainer = styled.div`
   margin-top: 50px;
   margin-bottom: 20px;
 `;
-const TagsContainer = styled.div`
-  position: sticky;
-  top: 80px;
-`;
+
 const Title = styled.h3``;
 const Tags = styled.div`
   display: flex;
-  margin-bottom: 30px;
 `;
 const Tag = styled.div<{ selected: boolean }>`
   background-color: ${(props) => props.selected && "#b6d8e4"};
@@ -55,7 +52,7 @@ function TreadingTags() {
   }
 
   return (
-    <TagsContainer>
+    <>
       <Title>Treading</Title>
       <Tags>
         {allTags?.items?.map((tag) => (
@@ -64,13 +61,14 @@ function TreadingTags() {
             selected={selectedTag === tag.name}
             onClick={() => {
               dispatch(trendingTagsActions.selectTag(tag.name));
+              dispatch(questionsListActions.resetPage());
             }}
           >
             {tag.name}
           </Tag>
         ))}
       </Tags>
-    </TagsContainer>
+    </>
   );
 }
 

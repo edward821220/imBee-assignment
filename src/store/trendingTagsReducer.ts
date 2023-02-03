@@ -38,6 +38,9 @@ const trendingTagsSlice = createSlice({
     selectTag(state, action) {
       state.selectedTag = action.payload;
     },
+    setTag(state, action) {
+      state.selectedTag = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder

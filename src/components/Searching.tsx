@@ -1,17 +1,18 @@
-import React from "react";
+import { useRef } from "react";
 import styled from "styled-components";
 import { searchActions } from "../store/searchReducer";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
+import { questionsListActions } from "../store/questionsListReducer";
+import { trendingTagsActions } from "../store/trendingTagsReducer";
 
 const SearchBar = styled.div`
-  position: sticky;
-  top: 30px;
   display: flex;
   width: 100%;
   border: 3px solid #b6d8e4;
   border-radius: 10px;
   margin-bottom: 20px;
+  overflow: hidden;
 `;
 const SearchInput = styled.input`
   display: block;
@@ -20,7 +21,7 @@ const SearchInput = styled.input`
   border: none;
   outline: none;
   padding-left: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
 `;
 const SearchButton = styled.button`
   display: block;
@@ -31,11 +32,19 @@ const SearchButton = styled.button`
 `;
 
 function Searching() {
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useDispatch();
   const keywords = useSelector((state: RootState) => state.search);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     dispatch(searchActions.changeKeywords(e.target.value));
+    timerRef.current = setTimeout(() => {
+      dispatch(questionsListActions.resetPage());
+      dispatch(trendingTagsActions.setTag(e.target.value.toLowerCase()));
+    }, 500);
   };
 
   return (
