@@ -6,10 +6,23 @@ import {
   trendingTagsActions,
   fetchTagsAsync,
 } from "../store/trendingTagsReducer";
+import spinner from "../img/spinner.gif";
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 20px;
+`;
+const TagsContainer = styled.div`
+  position: sticky;
+  top: 80px;
+`;
 const Title = styled.h3``;
 const Tags = styled.div`
   display: flex;
+  margin-bottom: 30px;
 `;
 const Tag = styled.div<{ selected: boolean }>`
   background-color: ${(props) => props.selected && "#b6d8e4"};
@@ -31,14 +44,18 @@ function TreadingTags() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <LoadingContainer>
+        <img src={spinner} alt="loading" width="50px" />
+      </LoadingContainer>
+    );
   }
   if (error) {
     return <div>Something went wrong...</div>;
   }
 
   return (
-    <>
+    <TagsContainer>
       <Title>Treading</Title>
       <Tags>
         {allTags?.items?.map((tag) => (
@@ -53,7 +70,7 @@ function TreadingTags() {
           </Tag>
         ))}
       </Tags>
-    </>
+    </TagsContainer>
   );
 }
 

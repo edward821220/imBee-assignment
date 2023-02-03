@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchTagsAsync = createAsyncThunk(
-  "trendingTags/fetchTags",
+  "trendingTags/fetchTagsAsync",
   async () => {
     const res = await fetch(
       "https://api.stackexchange.com/2.3/tags?page=1&pagesize=10&order=desc&sort=popular&site=stackoverflow"
@@ -37,9 +37,6 @@ const trendingTagsSlice = createSlice({
   reducers: {
     selectTag(state, action) {
       state.selectedTag = action.payload;
-    },
-    setAllTags(state, action) {
-      state.allTags = action.payload;
     },
   },
   extraReducers: (builder) => {

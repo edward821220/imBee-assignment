@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 
 const SearchBar = styled.div`
+  position: sticky;
+  top: 30px;
   display: flex;
   width: 100%;
   border: 3px solid #b6d8e4;
