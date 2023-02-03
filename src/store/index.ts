@@ -1,8 +1,9 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import searchReducer from "./searchReducer";
+import trendingTagsReducer from "./trendingTagsReducer";
 
 export const store = configureStore({
-  reducer: { search: searchReducer },
+  reducer: { search: searchReducer, trendingTags: trendingTagsReducer },
 });
 
 export type AppDispatch = typeof store.dispatch;
