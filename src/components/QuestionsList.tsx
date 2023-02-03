@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { fetchQuestions } from "../store/questionsListReducer";
+import {
+  fetchQuestions,
+  questionsListActions,
+} from "../store/questionsListReducer";
 import spinner from "../img/spinner.gif";
 
 const LoadingContainer = styled.div`
@@ -78,18 +81,42 @@ const Avatar = styled.img`
 const AuthorName = styled.p`
   margin: 0;
 `;
+const Bottom = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 function QuestionsList() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, questions } = useSelector(
+  const { loading, error, questions, page, hasMore } = useSelector(
     (state: RootState) => state.questionsList
   );
   const tag = useSelector((state: RootState) => state.trendingTags.selectedTag);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(fetchQuestions(tag));
-  }, [dispatch, tag]);
-  console.log(questions);
+    if (!tag) return;
+    const query = { tag, page };
+    dispatch(fetchQuestions(query));
+  }, [dispatch, tag, page]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        if (loading) return;
+        dispatch(questionsListActions.addPage());
+      }
+    });
+    const bottom = bottomRef.current;
+    if (bottom) {
+      observer.observe(bottom);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, [dispatch, questions, hasMore, loading]);
+
   if (loading) {
     return (
       <LoadingContainer>
@@ -102,9 +129,9 @@ function QuestionsList() {
   }
   return (
     <List>
-      {questions?.items?.map((question) => (
+      {questions?.map((question) => (
         <Item
-          key={question.title}
+          key={question.title + question.owner.display_name}
           onClick={() => {
             window.open(question.link, "_blank", "noreferrer");
           }}
@@ -143,6 +170,17 @@ function QuestionsList() {
           </Author>
         </Item>
       ))}
+      {questions.length !== 0 && (
+        <Bottom ref={bottomRef}>
+          {hasMore ? (
+            <LoadingContainer>
+              <img src={spinner} alt="loading" width="50px" />
+            </LoadingContainer>
+          ) : (
+            "End of List"
+          )}
+        </Bottom>
+      )}
     </List>
   );
 }
