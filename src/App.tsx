@@ -1,7 +1,17 @@
 import styled from "styled-components";
-import Searching from "./components/Searching";
-import TreadingTags from "./components/TreadingTags";
+import Header from "./components/Header";
 import QuestionsList from "./components/QuestionsList";
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  * {
+    box-sizing: border-box;
+  }
+`;
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -10,11 +20,13 @@ const Wrapper = styled.div`
 
 function App() {
   return (
-    <Wrapper>
-      <Searching />
-      <TreadingTags />
-      <QuestionsList />
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <Header />
+      <Wrapper>
+        <QuestionsList />
+      </Wrapper>
+    </>
   );
 }
 
